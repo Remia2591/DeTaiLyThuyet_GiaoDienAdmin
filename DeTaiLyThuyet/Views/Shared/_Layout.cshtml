@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <title>@ViewBag.Title - Gift Shop</title>
+    <link href="Content/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <form id="afForm" style="display:none">@Html.AntiForgeryToken()</form>
+    <script>
+        var SERVER_USER = @Html.Raw(Json.Encode(new { dangNhap = Session["TaiKhoanID"] != null, hoTen = Session["HoTen"], email = Session["Email"] }));
+    </script>
+    <div id="header"></div>
+    @RenderBody()
+    <div id="footer"></div>
+    <script src="Scripts/js/main.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

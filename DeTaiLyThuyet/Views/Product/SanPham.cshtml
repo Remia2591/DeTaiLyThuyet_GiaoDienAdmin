@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "Sản phẩm";
+}
+
+<div class="duongdan"><a href="Home/Index">TRANG CHỦ</a> &gt; <b id="duongDan">TẤT CẢ SẢN PHẨM</b></div>
+
+<div class="bocuc">
+    <div class="side">
+        <h3>Nhóm sản phẩm</h3>
+        <div id="tab"></div>
+        <hr />
+        <h3>Giá</h3>
+        <label><input type="checkbox" name="gia" value="0" onchange="loc()" /> 0đ - 50.000đ</label>
+        <label><input type="checkbox" name="gia" value="1" onchange="loc()" /> 50.000đ - 100.000đ</label>
+        <label><input type="checkbox" name="gia" value="2" onchange="loc()" /> 100.000đ - 200.000đ</label>
+        <label><input type="checkbox" name="gia" value="3" onchange="loc()" /> 200.000đ trở lên</label>
+        <hr />
+        <h3>Thương hiệu</h3>
+        <div id="dsThuongHieu"></div>
+    </div>
+
+    <div class="noidung">
+        <div class="sapxep">
+            Sắp xếp theo:
+            <select id="sapXep" onchange="loc()">
+                <option value="">Mặc định</option>
+                <option value="banchay">Bán chạy</option>
+                <option value="giamgia">Giảm giá nhiều</option>
+                <option value="tang">Giá thấp đến cao</option>
+                <option value="giam">Giá cao đến thấp</option>
+            </select>
+            <span id="soSP"></span>
+        </div>
+        <div class="luoi luoi-4" id="ds"></div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var loai = layThamSo("loai");
+        var q = layThamSo("q");
+
+        var loaiTab = [
+            { ma: "", ten: "Tất cả" },
+            { ma: "so", ten: "Sổ tay" },
+            { ma: "but", ten: "Bút" },
+            { ma: "dungcu", ten: "Dụng cụ" },
+            { ma: "qua", ten: "Quà lưu niệm" }
+        ];
+        var khoang = [[0, 50000], [50000, 100000], [100000, 200000], [200000, 1000000000]];
+
+        var t = "";
+        for (var i = 0; i < loaiTab.length; i++) {
+            var on = ((loai || "") == loaiTab[i].ma && !q) ? ' class="on"' : '';
+            var link = loaiTab[i].ma == "" ? "Product/SanPham" : "Product/SanPham?loai=" + loaiTab[i].ma;
+            t += '<a href="' + link + '"' + on + '>' + loaiTab[i].ten + '</a>';
+            if ((loai || "") == loaiTab[i].ma && !q && loaiTab[i].ma != "")
+                document.getElementById("duongDan").innerText = loaiTab[i].ten.toUpperCase();
+        }
+        document.getElementById("tab").innerHTML = t;
+        if (q) document.getElementById("duongDan").innerText = 'KẾT QUẢ TÌM: "' + q.toUpperCase() + '"';
+
+        var cacHieu = [];
+        for (var a = 0; a < SAN_PHAM.length; a++) {
+            var hieu = SAN_PHAM[a].thuongHieu;
+            if (SAN_PHAM[a].loai != "combo" && cacHieu.indexOf(hieu) < 0) cacHieu.push(hieu);
+        }
+        var th = "";
+        for (var b = 0; b < cacHieu.length; b++)
+            th += '<label><input type="checkbox" name="hieu" value="' + cacHieu[b] + '" onchange="loc()" /> ' + cacHieu[b] + '</label>';
+        document.getElementById("dsThuongHieu").innerHTML = th;
+
+        function loc() {
+            var chon = [];
+            var cb = document.getElementsByName("gia");
+            for (var i = 0; i < cb.length; i++) if (cb[i].checked) chon.push(khoang[cb[i].value]);
+
+            var hieuChon = [];
+            var ch = document.getElementsByName("hieu");
+            for (var m = 0; m < ch.length; m++) if (ch[m].checked) hieuChon.push(ch[m].value);
+
+            var kq = [];
+            for (var j = 0; j < SAN_PHAM.length; j++) {
+                var s = SAN_PHAM[j];
+                if (s.loai == "combo") continue;
+                if (loai && s.loai != loai) continue;
+                if (q && s.ten.toLowerCase().indexOf(q.toLowerCase()) < 0) continue;
+                if (hieuChon.length > 0 && hieuChon.indexOf(s.thuongHieu) < 0) continue;
+                if (chon.length > 0) {
+                    var ok = false;
+                    for (var k = 0; k < chon.length; k++) if (s.gia >= chon[k][0] && s.gia < chon[k][1]) ok = true;
+                    if (!ok) continue;
+                }
+                kq.push(s);
+            }
+
+            var kieu = document.getElementById("sapXep").value;
+            kq.sort(function (x, y) {
+                if (kieu == "tang") return x.gia - y.gia;
+                if (kieu == "giam") return y.gia - x.gia;
+                if (kieu == "banchay") return y.daBan - x.daBan;
+                if (kieu == "giamgia") return phanTram(y) - phanTram(x);
+                return 0;
+            });
+
+            document.getElementById("soSP").innerText = kq.length + " sản phẩm";
+            if (kq.length == 0) document.getElementById("ds").innerHTML = "<p>Không tìm thấy sản phẩm.</p>";
+            else veSP(kq, "ds");
+        }
+
+        loc();
+    </script>
+}

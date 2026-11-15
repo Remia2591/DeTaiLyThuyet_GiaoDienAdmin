@@ -1,0 +1,36 @@
+﻿@model IEnumerable<DeTaiLyThuyet.Models.DonHangChiTiet>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TenSanPham</td>
+                    <td>@item.DonGia.ToString("N0") đ</td>
+                    <td>@item.SoLuong</td>
+                    <td>
+                        @(item.ThanhTien.HasValue
+                        ? item.ThanhTien.Value.ToString("N0") + " đ"
+                        : "—")
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4">Đơn hàng chưa có sản phẩm.</td>
+            </tr>
+        }
+    </tbody>
+</table>

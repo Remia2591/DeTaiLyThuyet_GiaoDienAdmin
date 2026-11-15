@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Tổng quan";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<section class="admin-welcome">
+    <div>
+        <span class="admin-welcome-kicker">GIFT SHOP · ADMIN</span>
+        <h1>Chào mừng đến trang quản trị</h1>
+        <p>Quản lý sản phẩm, danh mục, đơn hàng và khách hàng trong một không gian làm việc thống nhất.</p>
+    </div>
+    <div class="admin-welcome-icon" aria-hidden="true">✦</div>
+</section>
+
+<div class="admin-section-heading">
+    <h2>Truy cập nhanh</h2>
+    <span>Chọn chức năng bạn muốn quản lý</span>
+</div>
+
+<div class="admin-dashboard-grid">
+    <a class="admin-tile" href="@Url.Action("Index", "SanPhams", new { area = "Admin" })">
+        <span class="admin-tile-icon">▦</span>
+        <strong>Quản lý sản phẩm</strong>
+        <span>Xem, thêm, sửa và cập nhật sản phẩm</span>
+    </a>
+    <a class="admin-tile" href="@Url.Action("Index", "DanhMucs", new { area = "Admin" })">
+        <span class="admin-tile-icon">◈</span>
+        <strong>Danh mục</strong>
+        <span>Tổ chức các nhóm sản phẩm</span>
+    </a>
+    <a class="admin-tile" href="@Url.Action("Index", "KhoHangs", new { area = "Admin" })">
+        <span class="admin-tile-icon">▤</span>
+        <strong>Quản lý kho</strong>
+        <span>Theo dõi tồn kho và hàng cần nhập</span>
+    </a>
+    <a class="admin-tile" href="@Url.Action("Index", "DonHangs", new { area = "Admin" })">
+        <span class="admin-tile-icon">≡</span>
+        <strong>Đơn hàng</strong>
+        <span>Tra cứu đơn đặt và chi tiết giao hàng</span>
+    </a>
+    <a class="admin-tile" href="@Url.Action("Index", "TaiKhoans", new { area = "Admin" })">
+        <span class="admin-tile-icon">♙</span>
+        <strong>Khách hàng</strong>
+        <span>Kiểm tra tài khoản và lịch sử mua</span>
+    </a>
+    <a class="admin-tile" href="@Url.Action("Index", "Home", new { area = "" })">
+        <span class="admin-tile-icon">↗</span>
+        <strong>Xem trang Customer</strong>
+        <span>Truy cập giao diện cửa hàng GiftShop</span>
+    </a>
+</div>
+
+<div class="admin-dashboard-note">
+    Trang tổng quan hiện hiển thị lối tắt đến các chức năng đã có. Không sử dụng số liệu doanh thu hay đơn hàng giả lập.
+</div>

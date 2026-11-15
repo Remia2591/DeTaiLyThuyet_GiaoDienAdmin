@@ -1,0 +1,18 @@
+﻿@model DeTaiLyThuyet.Models.TaiKhoan
+
+@{
+    ViewBag.Title = "Chi tiết khách hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h3>Danh sách đơn hàng</h3>
+
+@Html.Partial(
+    "~/Areas/Admin/Views/Shared/_DanhSachDonHangPV.cshtml",
+    Model.DonHangs
+)
+
+<p>
+    @Html.ActionLink("Quay lại danh sách khách hàng", "Index", null,
+            new { @class = "btn btn-default" })
+</p>

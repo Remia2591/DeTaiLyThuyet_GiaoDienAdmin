@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "Chi tiết sản phẩm";
+}
+
+<div class="duongdan"><a href="Home/Index">TRANG CHỦ</a> &gt; <span id="duongLoai"></span> &gt; <b id="duongTen"></b></div>
+
+<div class="wrap" id="chiTiet"></div>
+
+<div class="vung-sp">
+    <h2 class="tieude">Sản phẩm cùng loại</h2>
+    <div class="luoi" id="lienQuan"></div>
+</div>
+
+@section scripts {
+    <script>
+        var ma = layThamSo("ma");
+        var s = timSP(ma);
+        var DANH_GIA_MAU = [
+            { ten: "Minh Anh", sao: 5, nd: "Sản phẩm đẹp, đúng như mô tả, đóng gói cẩn thận.", ngay: "12/10/2026" },
+            { ten: "Quốc Bảo", sao: 5, nd: "Giao hàng nhanh, chất lượng tốt so với giá tiền.", ngay: "28/10/2026" },
+            { ten: "Thu Hà", sao: 4, nd: "Dùng ổn, sẽ ủng hộ shop lần sau.", ngay: "30/10/2026" }
+        ];
+
+        if (!s) {
+            document.getElementById("chiTiet").innerHTML = '<div class="hop-ct"><p>Không tìm thấy sản phẩm.</p><a class="nut" href="Product/SanPham">Về trang sản phẩm</a></div>';
+        } else {
+            document.title = s.ten + " - Gift Shop";
+            document.getElementById("duongTen").innerText = s.ten.toUpperCase();
+            document.getElementById("duongLoai").innerHTML = '<a href="' + (s.loai == "combo" ? "Home/Combo" : "Product/SanPham?loai=" + s.loai) + '">' + TEN_LOAI[s.loai].toUpperCase() + '</a>';
+            veChiTiet();
+            veDanhGia();
+
+            var lq = [];
+            for (var i = 0; i < SAN_PHAM.length; i++)
+                if (SAN_PHAM[i].loai == s.loai && SAN_PHAM[i].ma != s.ma) lq.push(SAN_PHAM[i]);
+            if (lq.length == 0) lq = SAN_PHAM.filter(function (x) { return x.ma != s.ma; }).slice(0, 4);
+            veSP(lq, "lienQuan");
+        }
+
+        function veChiTiet() {
+            var ngay = new Date();
+            ngay.setDate(ngay.getDate() + 2);
+            var maHang = "GS" + ("000" + s.ma).slice(-4);
+
+            var dd = "";
+            for (var i = 0; i < s.dacDiem.length; i++) dd += "<li>" + s.dacDiem[i] + "</li>";
+
+            var mt = "";
+            for (var j = 0; j < s.chiTiet.length; j++) mt += "<p>" + s.chiTiet[j] + "</p>";
+
+            var gom = "";
+            if (s.gom) {
+                gom = '<div class="hop-ct"><h3 class="tt-tieude">Combo gồm</h3><ul class="dac-diem">';
+                for (var k = 0; k < s.gom.length; k++) gom += "<li>" + s.gom[k] + "</li>";
+                gom += "</ul></div>";
+            }
+
+            document.getElementById("chiTiet").innerHTML =
+                '<div class="ct-wrap">' +
+                '<div class="ct-trai"><div class="ct-anh"><img src="Content/images/' + s.hinh + '" alt="' + s.ten + '" onerror="this.style.visibility=\'hidden\'" /></div>' +
+                '<div class="ct-cs"><b>Chính sách ưu đãi của Gift Shop</b><br>' +
+                '&#128666; Giao nhanh và uy tín<br>&#128260; Đổi trả miễn phí toàn quốc<br>&#127873; Ưu đãi khi mua số lượng lớn</div></div>' +
+
+                '<div class="ct-phai">' +
+                '<div class="hop-ct"><h1>' + s.ten + '</h1>' +
+                '<div class="ct-dong"><span>Thương hiệu: <b>' + s.thuongHieu + '</b></span><span>Xuất xứ: <b>' + s.xuatXu + '</b></span><span>Mã hàng: <b>' + maHang + '</b></span></div>' +
+                '<div class="sao">' + saoChu(diemSao(s)) + ' <small>' + diemSao(s).toFixed(1) + ' (' + soDanhGia(s) + ' đánh giá) | Đã bán ' + s.daBan + '</small></div>' +
+                '<div class="ct-gia"><span class="gia-lon">' + dinhDang(s.gia) + '</span><span class="gia-cu">' + dinhDang(s.giaGoc) + '</span><span class="the-giam">-' + phanTram(s) + '%</span></div>' +
+                '<div class="uudai"><span>FREESHIP đơn từ 250K</span><span>Mã GIFT10 giảm 10%</span><span>Đổi trả 7 ngày</span></div>' +
+                '<div class="ct-ship"><b>Thông tin vận chuyển</b><br>&#128666; Giao hàng tiêu chuẩn<br>Dự kiến giao: <b>' + ngay.toLocaleDateString("vi-VN") + '</b><br>Tình trạng: <b style="color:#1b7a3a">Còn hàng (' + s.tonKho + ' sản phẩm)</b></div>' +
+                '<div class="sl-chon"><b>Số lượng:</b><div class="sl-box"><button onclick="doiSo(-1)">-</button><input type="number" id="soLuong" value="1" min="1" /><button onclick="doiSo(1)">+</button></div></div>' +
+                '<div class="ct-nut"><button class="nut nut-vien" onclick="themTuChiTiet()">&#128722; Thêm vào giỏ hàng</button><button class="nut" onclick="muaNgay()">Mua ngay</button></div></div>' +
+
+                gom +
+
+                '<div class="hop-ct"><h3 class="tt-tieude">Thông tin chi tiết</h3><table class="bang-tt">' +
+                '<tr><td>Mã hàng</td><td>' + maHang + '</td></tr>' +
+                '<tr><td>Danh mục</td><td>' + TEN_LOAI[s.loai] + '</td></tr>' +
+                '<tr><td>Thương hiệu</td><td>' + s.thuongHieu + '</td></tr>' +
+                '<tr><td>Xuất xứ</td><td>' + s.xuatXu + '</td></tr>' +
+                '<tr><td>Chất liệu</td><td>' + s.chatLieu + '</td></tr>' +
+                '<tr><td>Kích thước</td><td>' + s.kichThuoc + '</td></tr>' +
+                '<tr><td>Bảo hành, đổi trả</td><td>' + s.baoHanh + '</td></tr></table></div>' +
+
+                '<div class="hop-ct"><h3 class="tt-tieude">Đặc điểm nổi bật</h3><ul class="dac-diem">' + dd + '</ul></div>' +
+                '<div class="hop-ct mo-ta-dai"><h3 class="tt-tieude">Mô tả sản phẩm</h3><p><b>' + s.ten + '</b></p>' + mt + '</div>' +
+                '<div class="hop-ct" id="khuDanhGia"></div>' +
+                '</div></div>';
+        }
+
+        function doiSo(d) {
+            var o = document.getElementById("soLuong");
+            var v = (parseInt(o.value) || 1) + d;
+            o.value = v < 1 ? 1 : v;
+        }
+        function laySoLuong() {
+            var sl = parseInt(document.getElementById("soLuong").value);
+            return (isNaN(sl) || sl < 1) ? 1 : sl;
+        }
+        function themTuChiTiet() { themGio(s.ma, laySoLuong()); }
+        function muaNgay() { themGio(s.ma, laySoLuong()); location.href = "Cart/GioHang"; }
+
+        function layDanhGia() { return DANH_GIA_MAU.concat(doc("danhGia_" + s.ma, [])); }
+        function veDanhGia() {
+            var ds = layDanhGia(), tong = 0, h = "";
+            for (var i = 0; i < ds.length; i++) tong += ds[i].sao;
+            var tb = (tong / ds.length).toFixed(1);
+            for (var j = ds.length - 1; j >= 0; j--) {
+                h += '<div class="dg-mot"><b>' + an(ds[j].ten) + '</b><span class="sao">' + saoChu(ds[j].sao) + '</span> <small>' + ds[j].ngay + '</small><p>' + an(ds[j].nd) + '</p></div>';
+            }
+            document.getElementById("khuDanhGia").innerHTML =
+                '<h3 class="tt-tieude">Đánh giá sản phẩm</h3>' +
+                '<div class="dg-tong"><div class="diem">' + tb + '/5</div><div><div class="sao" style="font-size:22px">' + saoChu(tb) + '</div>' + ds.length + ' đánh giá</div></div>' +
+                h +
+                '<h3 style="margin-top:18px">Viết đánh giá của bạn</h3>' +
+                '<label>Số sao</label><select id="dgSao"><option value="5">5 sao</option><option value="4">4 sao</option><option value="3">3 sao</option><option value="2">2 sao</option><option value="1">1 sao</option></select>' +
+                '<label>Nhận xét</label><textarea id="dgNd" rows="3"></textarea>' +
+                '<button class="nut" onclick="guiDanhGia()">Gửi đánh giá</button>';
+        }
+        function guiDanhGia() {
+            var u = nguoiDangNhap();
+            if (!u) { alert("Vui lòng đăng nhập để đánh giá"); location.href = "Account/DangNhap?next=" + encodeURIComponent("Product/ChiTiet?ma=" + s.ma); return; }
+            var nd = document.getElementById("dgNd").value.trim();
+            if (nd == "") { alert("Vui lòng nhập nhận xét"); return; }
+            var ds = doc("danhGia_" + s.ma, []);
+            ds.push({ ten: u.ten, sao: parseInt(document.getElementById("dgSao").value), nd: nd, ngay: new Date().toLocaleDateString("vi-VN") });
+            ghi("danhGia_" + s.ma, ds);
+            veDanhGia();
+            hienThongBao("Cảm ơn bạn đã đánh giá");
+        }
+    </script>
+}

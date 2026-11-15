@@ -1,0 +1,115 @@
+﻿@{
+    var activeController = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
+    var isDashboard = activeController == "HomeAdmin";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - GiftShop Admin</title>
+    @Styles.Render("~/Content/css")
+    <link href="@Url.Content("~/Content/css/style.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/css/admin.css")" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="gs-admin">
+    @* Giữ các phần tử này để Scripts/js/main.js của project hoạt động như trước. *@
+    <form id="afForm" style="display:none">@Html.AntiForgeryToken()</form>
+    <script>
+        var SERVER_USER = @Html.Raw(Json.Encode(new {
+            dangNhap = Session["TaiKhoanID"] != null,
+            hoTen = Session["HoTen"],
+            email = Session["Email"]
+        }));
+    </script>
+    <div id="header"></div>
+
+    <div class="admin-shell">
+        <aside id="adminSidebar" class="admin-sidebar" aria-label="Điều hướng quản trị">
+            <a class="admin-brand" href="@Url.Action("Index", "HomeAdmin", new { area = "Admin" })">
+                <span class="admin-brand-mark">GS</span>
+                <span class="admin-brand-copy">
+                    <strong>GiftShop<span>.</span></strong>
+                    <small>ADMIN PANEL</small>
+                </span>
+            </a>
+
+            <div class="admin-sidebar-caption">QUẢN LÝ CỬA HÀNG</div>
+            <nav class="admin-menu">
+                <a class="admin-nav-item @(isDashboard ? "active" : "")" href="@Url.Action("Index", "HomeAdmin", new { area = "Admin" })">
+                    <span class="admin-nav-icon" aria-hidden="true">⌂</span><span>Tổng quan</span>
+                </a>
+                <a class="admin-nav-item @(activeController == "SanPhams" ? "active" : "")" href="@Url.Action("Index", "SanPhams", new { area = "Admin" })">
+                    <span class="admin-nav-icon" aria-hidden="true">▦</span><span>Sản phẩm</span>
+                </a>
+                <a class="admin-nav-item @(activeController == "DanhMucs" ? "active" : "")" href="@Url.Action("Index", "DanhMucs", new { area = "Admin" })">
+                    <span class="admin-nav-icon" aria-hidden="true">◈</span><span>Danh mục</span>
+                </a>
+                <a class="admin-nav-item @(activeController == "KhoHangs" ? "active" : "")" href="@Url.Action("Index", "KhoHangs", new { area = "Admin" })">
+                    <span class="admin-nav-icon" aria-hidden="true">▤</span><span>Kho hàng</span>
+                </a>
+                <a class="admin-nav-item @(activeController == "DonHangs" ? "active" : "")" href="@Url.Action("Index", "DonHangs", new { area = "Admin" })">
+                    <span class="admin-nav-icon" aria-hidden="true">≡</span><span>Đơn hàng</span>
+                </a>
+                <a class="admin-nav-item @(activeController == "TaiKhoans" ? "active" : "")" href="@Url.Action("Index", "TaiKhoans", new { area = "Admin" })">
+                    <span class="admin-nav-icon" aria-hidden="true">♙</span><span>Khách hàng</span>
+                </a>
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+                <div class="admin-sidebar-caption">LIÊN KẾT NHANH</div>
+                <a class="admin-nav-item" href="@Url.Action("Index", "Home", new { area = "" })">
+                    <span class="admin-nav-icon" aria-hidden="true">↗</span><span>Xem cửa hàng</span>
+                </a>
+                <div class="admin-sidebar-note">
+                    <span class="admin-note-dot"></span>
+                    Giao diện quản trị GiftShop
+                </div>
+            </div>
+        </aside>
+
+        <button class="admin-overlay" type="button" aria-label="Đóng menu" onclick="toggleAdminMenu(false)"></button>
+
+        <div class="admin-workspace">
+            <header class="admin-toolbar">
+                <div class="admin-toolbar-left">
+                    <button class="admin-toggle" type="button" aria-label="Mở menu quản trị" onclick="toggleAdminMenu(true)">☰</button>
+                    <div class="admin-toolbar-title">
+                        <span class="admin-toolbar-eyebrow">BẢNG ĐIỀU KHIỂN</span>
+                        <strong>@(ViewBag.Title ?? "Quản trị cửa hàng")</strong>
+                    </div>
+                </div>
+                <div class="admin-toolbar-actions">
+                    <span class="admin-live-pill"><span></span> GiftShop Admin</span>
+                    <a class="admin-toolbar-store" href="@Url.Action("Index", "Home", new { area = "" })">Xem cửa hàng ↗</a>
+                </div>
+            </header>
+
+            <main class="admin-content">
+                @RenderBody()
+            </main>
+
+            <footer class="admin-footer">
+                <span>© @DateTime.Now.Year GiftShop · Trang quản trị</span>
+                <span>Giao diện chỉ thay đổi phần trình bày, không thay đổi xử lý dữ liệu.</span>
+            </footer>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        function toggleAdminMenu(isOpen) {
+            document.body.classList.toggle('admin-menu-open', isOpen);
+        }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') toggleAdminMenu(false);
+        });
+        window.CUSTOMER_HOME_URL = '@Url.Content("~/Home/Index")';
+    </script>
+    <script src="@Url.Content("~/Scripts/js/main.js")"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

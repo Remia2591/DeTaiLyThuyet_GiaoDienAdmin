@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "Trang chủ";
+}
+
+<div class="hero">
+    <div class="banner">
+        <div class="slide hien" style="background:linear-gradient(120deg,#c92127,#f0545a);">
+            <div class="nho">Back to School 2026</div>
+            <h1>Khai trường rộn ràng<br>Ưu đãi đến 35%</h1>
+            <p>Sổ tay, bút, dụng cụ học tập giá tốt cho năm học mới</p>
+            <a class="cta" href="Product/SanPham">Mua ngay</a>
+            <div class="bieutuong">&#128211;</div>
+        </div>
+        <div class="slide" style="background:linear-gradient(120deg,#8e1a8e,#d04fd0);">
+            <div class="nho">Combo tiết kiệm</div>
+            <h1>Combo Văn phòng<br>Đủ bộ, giá rẻ</h1>
+            <p>Mua theo combo tiết kiệm hơn đến 25% so với mua lẻ</p>
+            <a class="cta" href="Home/Combo">Xem combo</a>
+            <div class="bieutuong">&#128717;</div>
+        </div>
+        <div class="slide" style="background:linear-gradient(120deg,#e07b00,#ffb347);">
+            <div class="nho">Quà lưu niệm</div>
+            <h1>Gửi trao yêu thương<br>Quà tặng xinh xắn</h1>
+            <p>Móc khóa, cốc sứ, hộp quà mini cho mọi dịp đặc biệt</p>
+            <a class="cta" href="Product/SanPham?loai=qua">Chọn quà</a>
+            <div class="bieutuong">&#127873;</div>
+        </div>
+        <button class="mui mui-trai" onclick="chuyen(-1)">&#10094;</button>
+        <button class="mui mui-phai" onclick="chuyen(1)">&#10095;</button>
+        <div class="cham">
+            <span class="chamtron on" onclick="hienSlide(0)"></span>
+            <span class="chamtron" onclick="hienSlide(1)"></span>
+            <span class="chamtron" onclick="hienSlide(2)"></span>
+        </div>
+    </div>
+    <div class="hero-phai">
+        <div class="bn bn1"><h2>Giảm ngay 50K</h2><p>Cho đơn hàng từ 300K</p></div>
+        <div class="bn bn2"><h2>Freeship</h2><p>Đơn từ 250K - nhập mã FREESHIP</p></div>
+    </div>
+</div>
+
+<div class="promo">
+    <a href="Product/SanPham?loai=so">SĂN DEAL SỔ TAY<span>Ưu đãi đến 30%</span></a>
+    <a href="Product/SanPham?loai=but">BÚT VIẾT ĐỦ LOẠI<span>Giảm đến 25%</span></a>
+    <a href="Home/Combo">COMBO TIẾT KIỆM<span>Giảm đến 35%</span></a>
+    <a href="Product/SanPham?loai=qua">QUÀ LƯU NIỆM<span>Giảm đến 40%</span></a>
+</div>
+
+<div class="chinhsach-bar">
+    <div class="cs-o"><i>&#128666;</i><div><b>Giao nhanh, uy tín</b><small>Nội thành 1-2 ngày</small></div></div>
+    <div class="cs-o"><i>&#128260;</i><div><b>Đổi trả miễn phí</b><small>Trong 7 ngày toàn quốc</small></div></div>
+    <div class="cs-o"><i>&#127873;</i><div><b>Freeship từ 250K</b><small>Nhập mã FREESHIP</small></div></div>
+    <div class="cs-o"><i>&#128274;</i><div><b>Thanh toán an toàn</b><small>COD hoặc chuyển khoản</small></div></div>
+</div>
+
+<div class="danhmuc">
+    <a class="dm" href="Product/SanPham?loai=so"><div class="dm-icon" style="background:#f4516c;">&#128211;</div>Sổ tay</a>
+    <a class="dm" href="Product/SanPham?loai=but"><div class="dm-icon" style="background:#3a7bd5;">&#9999;</div>Bút</a>
+    <a class="dm" href="Product/SanPham?loai=dungcu"><div class="dm-icon" style="background:#f5a623;">&#128207;</div>Dụng cụ</a>
+    <a class="dm" href="Product/SanPham?loai=qua"><div class="dm-icon" style="background:#e8505b;">&#127873;</div>Quà lưu niệm</a>
+    <a class="dm" href="Home/Combo"><div class="dm-icon" style="background:#2fb67c;">&#128717;</div>Combo</a>
+    <a class="dm" href="Product/SanPham"><div class="dm-icon" style="background:#7b61ff;">&#9776;</div>Tất cả</a>
+</div>
+
+<div class="flash-khung">
+    <div class="flash">
+        <span class="flash-ten">&#9889; FLASH SALE</span>
+        Kết thúc trong
+        <span class="gio" id="gio">00</span>:<span class="gio" id="phut">00</span>:<span class="gio" id="giay">00</span>
+        <a class="flash-xem" href="Product/SanPham">Xem tất cả &gt;</a>
+    </div>
+    <div class="khung-gio" id="khungGio"></div>
+    <div class="luoi" id="ds-le"></div>
+</div>
+
+<div class="vung-sp">
+    <div class="tieude-dong"><h2 class="tieude">Sản phẩm theo danh mục</h2><a class="xemtatca" href="Product/SanPham">Xem tất cả &gt;</a></div>
+    <div class="tabs" id="tabDM">
+        <button onclick="chonDM('so',this)">Sổ tay</button>
+        <button onclick="chonDM('but',this)">Bút</button>
+        <button onclick="chonDM('dungcu',this)">Dụng cụ</button>
+        <button onclick="chonDM('qua',this)">Quà lưu niệm</button>
+    </div>
+    <div class="luoi" id="ds-dm"></div>
+</div>
+
+<div class="vung-sp">
+    <div class="tieude-dong"><h2 class="tieude">Combo tiết kiệm</h2><a class="xemtatca" href="Home/Combo">Xem tất cả &gt;</a></div>
+    <div class="luoi" id="ds-combo"></div>
+</div>
+
+<div class="thuonghieu">
+    <span>Thiên Long</span><span>Deli</span><span>Pastel Dream</span><span>Bunny Gift</span><span>Office Pro</span><span>Plan It</span><span>Color Pen</span><span>Lucky Cup</span>
+</div>
+
+<div class="goiy">
+    <div class="goiy-tit">&#10024; Gợi ý cho bạn &#10024;</div>
+    <div class="luoi" id="ds-goiy"></div>
+    <div class="goiy-more"><button class="xemthem" id="nutXemThem" onclick="xemThem()">Xem thêm</button></div>
+</div>
+
+@section scripts {
+    <script src="Scripts/js/trang-chu.js"></script>
+}

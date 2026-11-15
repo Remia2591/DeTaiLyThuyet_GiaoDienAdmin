@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Combo";
+}
+
+<div class="duongdan"><a href="Home/Index">TRANG CHỦ</a> &gt; <b>COMBO TIẾT KIỆM</b></div>
+
+<div class="vung">
+    <h2 class="tieude">Combo tiết kiệm</h2>
+    <p style="margin-bottom:18px;color:#555;">Mua theo combo tiết kiệm hơn đến 25% so với mua lẻ. Bấm vào combo để xem chi tiết từng món bên trong.</p>
+    <div id="dsMoTa"></div>
+    <div class="luoi" id="ds"></div>
+</div>
+
+@section scripts {
+    <script>
+        var combo = layDS(true);
+        var h = "";
+        for (var i = 0; i < combo.length; i++) {
+            h += '<div class="hop-ct" style="margin-bottom:12px;background:#fafafa;"><b style="color:#c92127;font-size:17px;">' + combo[i].ten + '</b>: ' + combo[i].mota +
+                '<br><small style="color:#666;">Gồm: ' + combo[i].gom.join(", ") + '</small></div>';
+        }
+        document.getElementById("dsMoTa").innerHTML = h;
+        veSP(combo, "ds");
+    </script>
+}

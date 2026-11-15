@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Giỏ hàng";
+}
+
+<div class="vung">
+    <h2 class="tieude">Giỏ hàng</h2>
+    <div id="noiDung"></div>
+</div>
+
+@section scripts {
+    <script>
+        function veGio() {
+            var g = layGio();
+            if (g.length == 0) {
+                document.getElementById("noiDung").innerHTML =
+                    '<p style="margin-bottom:12px;">Giỏ hàng của bạn đang trống.</p><a class="nut" href="Product/SanPham">Mua sắm ngay</a>';
+                return;
+            }
+            var t = tinhTien(g);
+            var h = '<div class="gio-bocuc"><div><table class="bang"><tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th><th></th></tr>';
+            for (var i = 0; i < g.length; i++) {
+                var s = timSP(g[i].ma);
+                h += '<tr><td><img class="anh-nho" src="Content/images/' + s.hinh + '" /><a href="Product/ChiTiet?ma=' + s.ma + '">' + s.ten + '</a></td>' +
+                    '<td>' + dinhDang(s.gia) + '</td>' +
+                    '<td><button onclick="doiSL(' + i + ',-1)">-</button> ' + g[i].sl + ' <button onclick="doiSL(' + i + ',1)">+</button></td>' +
+                    '<td><b>' + dinhDang(s.gia * g[i].sl) + '</b></td>' +
+                    '<td><button onclick="xoaSP(' + i + ')">Xóa</button></td></tr>';
+            }
+            h += '</table><a class="nut nut-vien" href="Product/SanPham">&larr; Tiếp tục mua sắm</a></div>' +
+                '<div class="tomtat"><h3 style="margin-bottom:10px;">Tóm tắt đơn hàng</h3>' +
+                '<div class="ma-giam"><input type="text" id="oMa" placeholder="Nhập mã giảm giá" value="' + t.ma + '" /><button onclick="apMa()">Áp dụng</button></div>' +
+                '<small style="color:#777;">Mã có sẵn: GIFT10 (giảm 10%), FREESHIP (miễn phí ship)</small>' +
+                '<div class="dong"><span>Tạm tính</span><span>' + dinhDang(t.tam) + '</span></div>' +
+                '<div class="dong"><span>Phí vận chuyển</span><span>' + (t.phi == 0 ? "Miễn phí" : dinhDang(t.phi)) + '</span></div>' +
+                '<div class="dong"><span>Giảm giá</span><span>-' + dinhDang(t.giam) + '</span></div>' +
+                '<div class="dong cuoi"><span>Tổng cộng</span><span>' + dinhDang(t.tong) + '</span></div>' +
+                '<a class="nut" style="display:block;text-align:center;" href="Order/ThanhToan">Thanh toán</a></div></div>';
+            document.getElementById("noiDung").innerHTML = h;
+        }
+
+        function apMa() {
+            var m = document.getElementById("oMa").value.trim().toUpperCase();
+            if (m != "" && m != "GIFT10" && m != "FREESHIP") { alert("Mã giảm giá không hợp lệ"); return; }
+            ghi("maGiam", m);
+            veGio();
+            if (m != "") hienThongBao("Đã áp dụng mã " + m);
+        }
+        function doiSL(i, d) {
+            var g = layGio();
+            g[i].sl += d;
+            if (g[i].sl < 1) g[i].sl = 1;
+            ghi("gioHang", g);
+            veGio();
+            capNhatDem();
+        }
+        function xoaSP(i) {
+            var g = layGio();
+            g.splice(i, 1);
+            ghi("gioHang", g);
+            veGio();
+            capNhatDem();
+        }
+
+        veGio();
+    </script>
+}
